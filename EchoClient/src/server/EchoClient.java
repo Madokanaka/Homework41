@@ -41,6 +41,8 @@
                         if ("bye".equalsIgnoreCase(message)) {
                             return;
                         }
+                        String response = serverScanner.nextLine();
+                        System.out.printf("Сервер: %s%n", response);
                     }
                 }
             } catch (IOException e) {

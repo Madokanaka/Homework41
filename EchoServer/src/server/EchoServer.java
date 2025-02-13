@@ -46,6 +46,7 @@ public class EchoServer {
                 }
                 String reversedMessage = new StringBuilder(message).reverse().toString();
                 writer.println(reversedMessage);
+                writer.flush();
             }
 
         } catch (NoSuchElementException ex) {
