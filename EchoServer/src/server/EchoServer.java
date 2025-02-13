@@ -58,7 +58,7 @@ public class EchoServer {
                 var message = scanner.nextLine().strip();
                 System.out.printf("Got: %s%n", message);
                 String[] parts = message.split(" ", 2);
-                String command = parts[0];
+                String command = parts[0].toLowerCase();
                 String argument = parts.length > 1 ? parts[1] : "";
 
                 Function<String, String> handler = commands.getOrDefault(command, msg -> command + (msg.isEmpty() ? "" : " " + msg));
