@@ -2,6 +2,8 @@ package server;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.NoSuchElementException;
@@ -30,23 +32,17 @@ public class EchoServer {
 
     private void handle(Socket socket) throws IOException {
         var input = socket.getInputStream();
-
         var isr = new InputStreamReader(input, "UTF-8");
+        OutputStream outputStream = socket.getOutputStream();
+        PrintWriter writer = new PrintWriter(outputStream);
 
-        try (var scanner = new Scanner(isr)) {
-
+        try (var scanner = new Scanner(isr); writer) {
             while (true) {
-
                 var message = scanner.nextLine().strip();
-
                 System.out.printf("Got: %s%n", message);
-
                 if (message.toLowerCase().equals("bye")) {
-
                     System.out.println("Bye bye");
-
                     return;
-
                 }
 
             }
