@@ -61,7 +61,7 @@ public class EchoServer {
                 String command = parts[0];
                 String argument = parts.length > 1 ? parts[1] : "";
 
-                Function<String, String> handler = commands.getOrDefault(command, msg -> command + (msg.isEmpty() ? "" : " " + msg));
+                Function<String, String> handler = commands.getOrDefault(command.toLowerCase(), msg -> command + (msg.isEmpty() ? "" : " " + msg));
                 String response = handler.apply(argument);
 
                 if (response == null) return;
