@@ -6,14 +6,31 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.function.Function;
 
 public class EchoServer {
     private final int port;
+    private final Map<String, Function<String, String>> commands = new HashMap<>();
 
     private EchoServer(int port) {
         this.port = port;
+
+        commands.put("date", msg -> LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+        commands.put("time", msg -> LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        commands.put("reverse", msg -> new StringBuilder(msg).reverse().toString());
+        commands.put("upper", msg -> msg.toUpperCase());
+        commands.put("bye", msg -> {
+            System.out.println("Bye bye");
+            return null;
+        });
+
     }
 
     public static EchoServer bindToPort(int port) {
@@ -40,12 +57,17 @@ public class EchoServer {
             while (true) {
                 var message = scanner.nextLine().strip();
                 System.out.printf("Got: %s%n", message);
-                if (message.toLowerCase().equals("bye")) {
-                    System.out.println("Bye bye");
-                    return;
-                }
-                String reversedMessage = new StringBuilder(message).reverse().toString();
-                writer.println(reversedMessage);
+                String[] parts = message.split(" ", 2);
+                String command = parts[0];
+                String argument = parts.length > 1 ? parts[1] : "";
+
+                Function<String, String> handler = commands.getOrDefault(command, msg -> command + (msg.isEmpty() ? "" : " " + msg));
+                String response = handler.apply(argument);
+
+                if (response == null) return;
+
+                writer.println(response);
+
                 writer.flush();
             }
 
