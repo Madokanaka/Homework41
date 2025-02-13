@@ -44,7 +44,8 @@ public class EchoServer {
                     System.out.println("Bye bye");
                     return;
                 }
-
+                String reversedMessage = new StringBuilder(message).reverse().toString();
+                writer.println(reversedMessage);
             }
 
         } catch (NoSuchElementException ex) {
